@@ -22,6 +22,9 @@ class Books:
   def lookup(self, isbn):
     product = self.amazon.lookup(ItemId = isbn, IdType = 'ISBN', SearchIndex = "Books") 
 
+    if isinstance(product, (list)):
+      product = product[0]
+
     book = {
       'title':            product.title,
       'image_url':        product.large_image_url,
@@ -40,6 +43,7 @@ class Books:
     return book
 
 books = Books('config.yml')
+
 for isbn in sys.argv[1:]:
   book   = books.lookup(isbn)
 
