@@ -4,6 +4,7 @@ import yaml
 import sys
 import os
 import urllib2
+import time
 from amazon.api import AmazonAPI
 
 # Change to script directory
@@ -48,3 +49,6 @@ for isbn in sys.argv[1:]:
   with open('raw_data/{0}.jpg'.format(isbn), 'wb') as out:
     data = urllib2.urlopen(book['image_url']).read()
     out.write(data)
+
+  print "Got data for {0}".format(isbn)
+  time.sleep(0.5)
