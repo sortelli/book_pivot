@@ -1,7 +1,12 @@
 #!/usr/bin/env python
 
 import yaml
+import sys
+import os
 from amazon.api import AmazonAPI
+
+# Change to script directory
+os.chdir(os.path.dirname(sys.argv[0]))
 
 class Books:
   def __init__(self, config_file):
@@ -32,5 +37,9 @@ class Books:
 
     return book
 
-book = Books('config.yml').lookup('9781449389734')
-print yaml.dump(book, default_flow_style = False)
+books = Books('config.yml')
+for isbn in sys.argv[1:]:
+  book = books.lookup(isbn)
+
+  with open('raw_data/{0}.yml'.format(isbn), 'w') as out:
+    out.write(yaml.dump(book, default_flow_style = False))
