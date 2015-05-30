@@ -45,14 +45,19 @@ class Books:
 books = Books('config.yml')
 
 for isbn in sys.argv[1:]:
-  book   = books.lookup(isbn)
+  try:
+    book = books.lookup(isbn)
 
-  with open('raw_data/{0}.yml'.format(isbn), 'w') as out:
-    out.write(yaml.dump(book, default_flow_style = False))
+    with open('raw_data/{0}.yml'.format(isbn), 'w') as out:
+      out.write(yaml.dump(book, default_flow_style = False))
 
-  with open('raw_data/{0}.jpg'.format(isbn), 'wb') as out:
-    data = urllib2.urlopen(book['image_url']).read()
-    out.write(data)
+    with open('raw_data/{0}.jpg'.format(isbn), 'wb') as out:
+      data = urllib2.urlopen(book['image_url']).read()
+      out.write(data)
 
-  print "Got data for {0}".format(isbn)
+    print "Got data for {0}".format(isbn)
+
+  except:
+    print "Unexpected error on {0}".format(isbn), sys.exc_info()[0]
+
   time.sleep(0.5)
