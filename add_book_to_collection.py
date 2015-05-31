@@ -44,6 +44,9 @@ class Books:
 
 books = Books('config.yml')
 
+if not os.path.exists('raw_data'):
+  os.mkdir('raw_data')
+
 for isbn in sys.argv[1:]:
   try:
     book = books.lookup(isbn)
@@ -55,7 +58,7 @@ for isbn in sys.argv[1:]:
       data = urllib2.urlopen(book['image_url']).read()
       out.write(data)
 
-    print "Got data for {0}".format(isbn)
+    print "Added {0}, {1}".format(isbn, book['title'])
 
   except:
     print "Unexpected error on {0}".format(isbn), sys.exc_info()[0]
