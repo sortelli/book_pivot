@@ -54,6 +54,10 @@ os.chdir('collection')
 books = Books('../config.yml')
 
 for isbn in sys.argv[1:]:
+  if os.path.exists(isbn + '.dzi'):
+    print "Item is already in collection: " + isbn
+    continue
+
   try:
     book     = books.lookup(isbn)
     yml_file = '../raw_data/{0}.yml'.format(isbn)
