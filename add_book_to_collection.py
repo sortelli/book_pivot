@@ -3,12 +3,11 @@
 import yaml
 import sys
 import os
+import subprocess
 import urllib2
 import time
 from amazon.api import AmazonAPI
 
-# Change to script directory
-os.chdir(os.path.dirname(sys.argv[0]))
 
 class Books:
   def __init__(self, config_file):
@@ -42,21 +41,32 @@ class Books:
 
     return book
 
-books = Books('config.yml')
+os.chdir(os.path.dirname(sys.argv[0]))
 
 if not os.path.exists('raw_data'):
   os.mkdir('raw_data')
 
+if not os.path.exists('collection'):
+  os.mkdir('collection')
+
+os.chdir('collection')
+
+books = Books('../config.yml')
+
 for isbn in sys.argv[1:]:
   try:
-    book = books.lookup(isbn)
+    book     = books.lookup(isbn)
+    yml_file = '../raw_data/{0}.yml'.format(isbn)
+    jpg_file = '../raw_data/{0}.jpg'.format(isbn)
 
-    with open('raw_data/{0}.yml'.format(isbn), 'w') as out:
+    with open(yml_file, 'w') as out:
       out.write(yaml.dump(book, default_flow_style = False))
 
-    with open('raw_data/{0}.jpg'.format(isbn), 'wb') as out:
+    with open(jpg_file, 'wb') as out:
       data = urllib2.urlopen(book['image_url']).read()
       out.write(data)
+
+    subprocess.call("makedeepzoom -c 'books.dzc' '{0}'".format(jpg_file), shell=True)
 
     print "Added {0}, {1}".format(isbn, book['title'])
 
