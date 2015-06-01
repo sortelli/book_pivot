@@ -4,8 +4,10 @@ import sys
 import os
 
 class CXML:
-  def __init__(self, dzc_file, config):
-    self.dzc_root = ET.parse(dzc_file).getroot()
+  def __init__(self, dzc_file, data_dir, config):
+    self.dzc_file = dzc_file
+    self.data_dir = data_dir
+    self.dzc_root = ET.parse(self.dzc_file).getroot()
     self.name     = config['name']
     self.facets   = config['facets']
     self.items    = map(lambda item: item.attrib, self.dzc_root[0])
@@ -22,11 +24,16 @@ class CXML:
     collection.set('Name',          self.name)
 
     facet_categories = ET.SubElement(collection, 'FacetCategories')
-    items            = ET.SubElement(collection, 'Items')
-
     self.add_facet_categories(facet_categories, xmlns['p'])
 
+    items = ET.SubElement(collection, 'Items')
+    items.set('ImgBase', self.dzc_file)
+    self.add_items(items)
+
     print(ET.tostring(collection, pretty_print = True))
+
+  def add_items(self, items):
+    None
 
   def add_facet_categories(self, facet_categories, pivot_ns):
     is_filter_visible = '{{{0}}}IsFilterVisible'   .format(pivot_ns)
@@ -43,5 +50,5 @@ class CXML:
 
 os.chdir(os.path.dirname(__file__) if os.path.dirname(__file__) else '.')
 config = yaml.load(open('books_config.yml', 'r'))
-cxml   = CXML('collection/books.dzc', config)
+cxml   = CXML('collection/books.dzc', 'raw_data', config)
 cxml.save('books.cxml')
