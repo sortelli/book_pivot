@@ -1,11 +1,13 @@
 import lxml.etree as ET
+import yaml
 import sys
+import os
 
 class CXML:
-  def __init__(self, dzc_file, name, facets):
+  def __init__(self, dzc_file, config):
     self.dzc_root = ET.parse(dzc_file).getroot()
-    self.name     = name
-    self.facets   = facets
+    self.name     = config['name']
+    self.facets   = config['facets']
     self.items    = map(lambda item: item.attrib, self.dzc_root[0])
 
   def save(self, cxml_file):
@@ -39,17 +41,7 @@ class CXML:
         node.set(is_filter_visible, 'false')
         node.set(is_wheel_visible,  'false')
 
-cxml = CXML('collection/books.dzc', 'Books', [
-  {'name': 'Title',            'type': 'String',   'key': 'title',            'filter': False},
-  {'name': 'ISBN',             'type': 'String',   'key': 'isbn',             'filter': False},
-  {'name': 'Authors',          'type': 'String',   'key': 'authors',          'filter': True },
-  {'name': 'Publisher',        'type': 'String',   'key': 'publisher',        'filter': True },
-  {'name': 'Binding',          'type': 'String',   'key': 'binding',          'filter': True },
-  {'name': 'Publication Date', 'type': 'DateTime', 'key': 'publication_date', 'filter': True },
-  {'name': 'Sales Rank',       'type': 'Number',   'key': 'sales_rank',       'filter': True },
-  {'name': 'Pages',            'type': 'Number',   'key': 'pages',            'filter': True },
-  {'name': 'Price',            'type': 'Number',   'key': 'price',            'filter': True },
-  {'name': 'List Price',       'type': 'Number',   'key': 'list_price',       'filter': True }
-])
-
+os.chdir(os.path.dirname(__file__) if os.path.dirname(__file__) else '.')
+config = yaml.load(open('books_config.yml', 'r'))
+cxml   = CXML('collection/books.dzc', config)
 cxml.save('books.cxml')

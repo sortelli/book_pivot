@@ -1,0 +1,42 @@
+name: Books
+facets:
+  - key: title
+    name: Title
+    type: String
+    filter: false
+  - key: isbn
+    name: ISBN
+    type: String
+    filter: false
+  - key: authors
+    name: Authors
+    type: String
+    filter: true
+  - key: publisher
+    name: Publisher
+    type: String
+    filter: true
+  - key: binding
+    name: Binding
+    type: String
+    filter: true
+  - key: publication_date
+    name: Publication Date
+    type: DateTime
+    filter: true
+  - key: sales_rank
+    name: Sales Rank
+    type: Number
+    filter: true
+  - key: pages
+    name: Pages
+    type: Number
+    filter: true
+  - key: price
+    name: Price
+    type: Number
+    filter: true
+  - key: list_price
+    name: List Price
+    type: Number
+    filter: true
