@@ -59,7 +59,8 @@ class CXML:
 
         for value in values:
           value_node = ET.SubElement(facet_node, facet['type'])
-          value_node.set('Value', str(value))
+          v = value if isinstance(value, unicode) else str(value)
+          value_node.set('Value', v)
 
   def add_facet_categories(self, facet_categories, pivot_ns):
     is_filter_visible = '{{{0}}}IsFilterVisible'   .format(pivot_ns)
