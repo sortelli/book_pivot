@@ -31,7 +31,8 @@ class CXML:
     items.set('ImgBase', self.dzc_file)
     self.add_items(items)
 
-    print(ET.tostring(collection, pretty_print = True))
+    with open(cxml_file, 'w') as out:
+      out.write(ET.tostring(collection, pretty_print = True))
 
   def add_items(self, items):
     for item in self.dzc_items:
