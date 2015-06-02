@@ -11,7 +11,7 @@ class CXML:
     self.facets   = config['facets']
 
     dzc_root = ET.parse(self.dzc_file).getroot()
-    self.dzc_items = map(lambda item: item.attrib, dzc_root[0])
+    self.dzc_items = [item.attrib for item in dzc_root[0]]
 
   def save(self, cxml_file):
     xmlns = {
