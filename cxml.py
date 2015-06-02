@@ -7,10 +7,11 @@ class CXML:
   def __init__(self, dzc_file, data_dir, config):
     self.dzc_file = dzc_file
     self.data_dir = data_dir
-    self.dzc_root = ET.parse(self.dzc_file).getroot()
     self.name     = config['name']
     self.facets   = config['facets']
-    self.items    = map(lambda item: item.attrib, self.dzc_root[0])
+
+    dzc_root = ET.parse(self.dzc_file).getroot()
+    self.dzc_items = map(lambda item: item.attrib, dzc_root[0])
 
   def save(self, cxml_file):
     xmlns = {
@@ -33,7 +34,15 @@ class CXML:
     print(ET.tostring(collection, pretty_print = True))
 
   def add_items(self, items):
-    None
+    for item in self.dzc_items:
+      data = self.get_item_data(item['Source'])
+      node = ET.SubElement(items, 'Item')
+      name = '#' + item['N']
+
+      node.set('Img',  name)
+      node.set('Id',   item['N'])
+      node.set('Name', data.get('_name', name))
+      node.set('Href', data.get('_href', '#'))
 
   def add_facet_categories(self, facet_categories, pivot_ns):
     is_filter_visible = '{{{0}}}IsFilterVisible'   .format(pivot_ns)
@@ -47,6 +56,13 @@ class CXML:
       if not facet['filter']:
         node.set(is_filter_visible, 'false')
         node.set(is_wheel_visible,  'false')
+
+  def get_item_data(self, dzi_source):
+    dzi_id    = os.path.splitext(os.path.basename(dzi_source))[0]
+    data_file = os.path.join(self.data_dir, dzi_id + '.yml')
+
+    with open(data_file, 'r') as yml:
+      return yaml.load(yml)
 
 os.chdir(os.path.dirname(__file__) if os.path.dirname(__file__) else '.')
 config = yaml.load(open('books_config.yml', 'r'))
