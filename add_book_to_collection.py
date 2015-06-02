@@ -25,6 +25,8 @@ class Books:
       product = product[0]
 
     book = {
+      '_name':            product.title,
+      '_href':            product.offer_url,
       'title':            product.title,
       'image_url':        product.large_image_url,
       'sales_rank':       int(product.sales_rank),
