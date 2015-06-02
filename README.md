@@ -6,7 +6,12 @@ of books.
 
 ![Screenshot](screenshot.png)
 
-## How to Run
+## Demo
+
+Visit [http://books.sortelli.com](http://books.sortelli.com) for a
+running demo.
+
+## Building a Colleciton
 
 1) Produce a list of ISBN numbers. One strategy is to use a barcode
 reader application on your phone to scan barcodes from books that
