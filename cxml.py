@@ -44,6 +44,23 @@ class CXML:
       node.set('Name', data.get('_name', name))
       node.set('Href', data.get('_href', '#'))
 
+      facets_node = ET.SubElement(node, 'Facets')
+      self.add_facet_values(facets_node, data)
+
+  def add_facet_values(self, facets_node, data):
+    for facet in self.facets:
+      if facet['key'] in data and data[facet['key']]:
+        values = data[facet['key']]
+        if not isinstance(values, (list)):
+          values = [values]
+
+        facet_node = ET.SubElement(facets_node, 'Facet')
+        facet_node.set('Name', facet['name'])
+
+        for value in values:
+          value_node = ET.SubElement(facet_node, facet['type'])
+          value_node.set('Value', str(value))
+
   def add_facet_categories(self, facet_categories, pivot_ns):
     is_filter_visible = '{{{0}}}IsFilterVisible'   .format(pivot_ns)
     is_wheel_visible  = '{{{0}}}IsWordWheelVisible'.format(pivot_ns)
@@ -51,7 +68,7 @@ class CXML:
     for facet in self.facets:
       node = ET.SubElement(facet_categories, 'FacetCategory')
       node.set('Name', facet['name'])
-      node.set('type', facet['type'])
+      node.set('Type', facet['type'])
 
       if not facet['filter']:
         node.set(is_filter_visible, 'false')
