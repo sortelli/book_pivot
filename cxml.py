@@ -81,8 +81,3 @@ class CXML:
 
     with open(data_file, 'r') as yml:
       return yaml.load(yml)
-
-os.chdir(os.path.dirname(__file__) if os.path.dirname(__file__) else '.')
-config = yaml.load(open('books_config.yml', 'r'))
-cxml   = CXML('collection/books.dzc', 'raw_data', config)
-cxml.save('books.cxml')
